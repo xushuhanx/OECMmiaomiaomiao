@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>保护地之外：OECM知识档案</title>
+<style>
+/* ===== CSS 变量 & 主题系统（继承游戏风格） ===== */
+:root {
+    --color-bg: #1a1a2e;
+    --color-bg-light: #16213e;
+    --color-accent: #e94560;
+    --color-accent-light: #ff6b6b;
+    --color-success: #4ecdc4;
+    --color-warning: #f4d03f;
+    --color-info: #74b9ff;
+    --color-text: #f5f5f5;
+    --color-text-dim: #a0a0a0;
+    --color-border: rgba(255,255,255,0.1);
+    --color-card-bg: rgba(255,255,255,0.05);
+    --shadow-card: 0 4px 20px rgba(0,0,0,0.3);
+    --tag-eco: #4ecdc4;
+    --tag-agri: #a8d8a8;
+    --tag-urban: #74b9ff;
+    --tag-marine: #0984e3;
+    --tag-typical: #f4d03f;
+    --nav-height: 52px;
+}
+[data-theme="light"] {
+    --color-bg: #F5D8B4;
+    --color-bg-light: #EDD9A3;
+    --color-accent: #5C3D2E;
+    --color-accent-light: #8A6E5A;
+    --color-success: #6A8A3A;
+    --color-warning: #C99458;
+    --color-info: #8A5A3A;
+    --color-text: #1a1a1a;
+    --color-text-dim: #5C3D2E;
+    --color-border: rgba(92,61,46,0.18);
+    --color-card-bg: rgba(255,255,255,0.65);
+    --shadow-card: 0 4px 20px rgba(92,61,46,0.15);
+    --tag-eco: #3a7d44;
+    --tag-agri: #5a8a3a;
+    --tag-urban: #2d6a9f;
+    --tag-marine: #1a5276;
+    --tag-typical: #a0522d;
+}
+
+/* ===== 全局 ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+    line-height: 1.7;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* ===== 顶部导航锚点栏 ===== */
+.oecm-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--color-bg-light);
+    border-bottom: 1px solid var(--color-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    height: var(--nav-height);
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.oecm-nav::-webkit-scrollbar { display: none; }
+
+.nav-back {
+    flex-shrink: 0;
+    background: var(--color-accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.35rem 1rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    margin-right: 1.2rem;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+}
+.nav-back:hover { opacity: 0.85; }
+
+.nav-links {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-link {
+    flex-shrink: 0;
+    color: var(--color-text-dim);
+    text-decoration: none;
+    font-size: 0.78rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    transition: color 0.2s, background 0.2s;
+}
+.nav-link:hover { color: var(--color-accent); background: var(--color-card-bg); }
+
+.nav-theme {
+    margin-left: auto;
+    flex-shrink: 0;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-dim);
+    border-radius: 6px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+}
+.nav-theme:hover { border-color: var(--color-accent); color: var(--color-accent); }
+
+/* ===== 页面容器 ===== */
+.oecm-page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+}
+
+/* ===== Hero 首屏 ===== */
+.oecm-hero {
+    padding: 3.5rem 0 2.5rem;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 2.5rem;
+}
+.hero-kicker {
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+.hero-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+    margin-bottom: 2rem;
+}
+@media (max-width: 640px) { .hero-layout { grid-template-columns: 1fr; } }
+
+.hero-title-big {
+    font-size: 4rem;
+    font-weight: 900;
+    color: var(--color-accent);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+}
+.hero-title-sub {
+    font-size: 0.82rem;
+    color: var(--color-text-dim);
+    line-height: 1.5;
+}
+.hero-definition {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--color-text);
+    padding: 1rem 1.2rem;
+    background: var(--color-card-bg);
+    border-left: 3px solid var(--color-accent);
+    border-radius: 0 8px 8px 0;
+}
+.hero-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+.hero-tag {
+    padding: 0.35rem 1rem;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+}
+.hero-tag.accent { background: var(--color-accent); color: white; border-color: transparent; }
+.hero-tag.success { background: var(--tag-eco); color: white; border-color: transparent; }
+.hero-tag.warning { background: var(--color-warning); color: #1a1a1a; border-color: transparent; }
+.hero-tag.info { background: var(--color-info); color: white; border-color: transparent; }
+
+/* ===== 通用 Section ===== */
+.oecm-section {
+    margin-bottom: 3rem;
+    scroll-margin-top: calc(var(--nav-height) + 1rem);
+}
+.section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--color-border);
+}
+.section-num {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    letter-spacing: 0.1em;
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-accent);
+    border-radius: 4px;
+    padding: 0.15rem 0.5rem;
+    flex-shrink: 0;
+}
+.section-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+/* ===== 卡片 ===== */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+.card-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.card-grid-3 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 640px) {
+    .card-grid-2, .card-grid-3 { grid-template-columns: 1fr; }
+}
+
+.oecm-card {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 1.2rem;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.oecm-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
+.card-icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
+.card-title { font-size: 0.95rem; font-weight: 700; color: var(--color-accent); margin-bottom: 0.4rem; }
+.card-desc { font-size: 0.82rem; color: var(--color-text-dim); line-height: 1.6; }
+
+/* 关键词卡片 */
+.keyword-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+}
+@media (max-width: 480px) { .keyword-grid { grid-template-columns: 1fr; } }
+.keyword-card {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+}
+.kw-tag {
+    flex-shrink: 0;
+    background: var(--color-accent);
+    color: white;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    margin-top: 0.1rem;
+}
+.kw-text { font-size: 0.85rem; color: var(--color-text); line-height: 1.6; }
+.kw-text strong { color: var(--color-accent); }
+
+/* ===== 对比表 ===== */
+.compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+}
+.compare-table th {
+    background: var(--color-accent);
+    color: white;
+    padding: 0.85rem 1.2rem;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+.compare-table th:first-child { background: var(--color-bg-light); color: var(--color-text-dim); }
+.compare-table td {
+    padding: 0.8rem 1.2rem;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text);
+    vertical-align: top;
+    line-height: 1.6;
+}
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:nth-child(odd) td { background: var(--color-card-bg); }
+.compare-table td:first-child { font-weight: 600; color: var(--color-text-dim); font-size: 0.8rem; }
+
+/* ===== 判断准则互动卡 ===== */
+.criteria-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+@media (max-width: 560px) { .criteria-grid { grid-template-columns: 1fr; } }
+.criteria-card {
+    background: var(--color-card-bg);
+    border: 2px solid var(--color-border);
+    border-radius: 12px;
+    padding: 1.4rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    user-select: none;
+}
+.criteria-card:hover { border-color: var(--color-accent); transform: translateY(-2px); }
+.criteria-card.active { border-color: var(--color-accent); background: var(--color-accent); }
+.criteria-card.active .crit-letter { background: white; color: var(--color-accent); }
+.criteria-card.active .crit-title { color: white; }
+.criteria-card.active .crit-desc { color: rgba(255,255,255,0.85); }
+.crit-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.6rem; }
+.crit-letter {
+    width: 32px; height: 32px;
+    background: var(--color-accent);
+    color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 1rem;
+    flex-shrink: 0;
+}
+.crit-title { font-weight: 700; font-size: 0.9rem; color: var(--color-text); }
+.crit-desc { font-size: 0.8rem; color: var(--color-text-dim); line-height: 1.6; }
+.crit-hint { font-size: 0.72rem; color: var(--color-text-dim); margin-top: 1rem; text-align: center; opacity: 0.7; }
+
+/* ===== 保护目标三栏 ===== */
+.goal-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+@media (max-width: 640px) { .goal-grid { grid-template-columns: 1fr; } }
+.goal-card {
+    border-radius: 12px;
+    padding: 1.4rem;
+    box-shadow: var(--shadow-card);
+    position: relative;
+    overflow: hidden;
+}
+.goal-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 4px;
+}
+.goal-card.primary { background: var(--color-card-bg); border: 1px solid var(--tag-eco); }
+.goal-card.primary::before { background: var(--tag-eco); }
+.goal-card.secondary { background: var(--color-card-bg); border: 1px solid var(--color-warning); }
+.goal-card.secondary::before { background: var(--color-warning); }
+.goal-card.auxiliary { background: var(--color-card-bg); border: 1px solid var(--color-info); }
+.goal-card.auxiliary::before { background: var(--color-info); }
+.goal-badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    margin-bottom: 0.7rem;
+    color: white;
+}
+.goal-card.primary .goal-badge { background: var(--tag-eco); }
+.goal-card.secondary .goal-badge { background: var(--color-warning); color: #1a1a1a; }
+.goal-card.auxiliary .goal-badge { background: var(--color-info); }
+.goal-title { font-size: 1rem; font-weight: 700; color: var(--color-text); margin-bottom: 0.4rem; }
+.goal-meaning { font-size: 0.8rem; color: var(--color-text-dim); margin-bottom: 0.7rem; line-height: 1.6; }
+.goal-examples { font-size: 0.78rem; color: var(--color-text-dim); }
+.goal-examples span {
+    display: inline-block;
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 0.15rem 0.4rem;
+    margin: 0.15rem 0.1rem;
+    font-size: 0.72rem;
+}
+
+/* ===== 中国潜在类型 ===== */
+.space-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+@media (max-width: 540px) { .space-grid { grid-template-columns: 1fr; } }
+.space-card {
+    background: var(--color-card-bg);
+    border-radius: 12px;
+    padding: 1.2rem;
+    border: 1px solid var(--color-border);
+}
+.space-header {
+    display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.8rem;
+}
+.space-icon { font-size: 1.6rem; }
+.space-name { font-size: 1rem; font-weight: 700; color: var(--color-text); }
+.space-subtitle { font-size: 0.72rem; color: var(--color-text-dim); }
+.space-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.space-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-dim);
+}
+
+/* ===== 时间线 ===== */
+.timeline-wrap {
+    position: relative;
+    padding-left: 2rem;
+}
+.timeline-wrap::before {
+    content: '';
+    position: absolute;
+    left: 8px; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--color-border);
+}
+.timeline-item {
+    position: relative;
+    margin-bottom: 1rem;
+    padding: 0.8rem 1rem;
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    transition: border-color 0.2s;
+}
+.timeline-item:hover { border-color: var(--color-accent); }
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -1.7rem; top: 50%;
+    transform: translateY(-50%);
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    border: 2px solid var(--color-bg);
+}
+.timeline-item.highlight::before { background: var(--color-warning); }
+.timeline-item.china::before { background: var(--tag-eco); }
+.tl-year {
+    font-size: 0.78rem; font-weight: 700;
+    color: var(--color-accent);
+    margin-bottom: 0.2rem;
+}
+.timeline-item.highlight .tl-year { color: var(--color-warning); }
+.timeline-item.china .tl-year { color: var(--tag-eco); }
+.tl-event { font-size: 0.88rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.2rem; }
+.tl-meaning { font-size: 0.78rem; color: var(--color-text-dim); line-height: 1.5; }
+
+.timeline-phase-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+    padding: 0.8rem 0 0.4rem;
+    margin-left: -2rem;
+    padding-left: 2.5rem;
+    border-top: 1px solid var(--color-border);
+    margin-top: 0.5rem;
+}
+
+/* ===== 案例表格 ===== */
+.table-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+    align-items: center;
+}
+.table-search {
+    flex: 1; min-width: 180px;
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 0.5rem 0.9rem;
+    color: var(--color-text);
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.table-search:focus { border-color: var(--color-accent); }
+.table-search::placeholder { color: var(--color-text-dim); }
+.filter-btn {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    color: var(--color-text-dim);
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.filter-btn:hover, .filter-btn.active { border-color: var(--color-accent); color: var(--color-accent); background: rgba(233,69,96,0.1); }
+[data-theme="light"] .filter-btn:hover,
+[data-theme="light"] .filter-btn.active { background: rgba(92,61,46,0.1); }
+
+.case-table-wrap {
+    overflow-x: auto;
+    border-radius: 10px;
+    box-shadow: var(--shadow-card);
+}
+.case-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    min-width: 560px;
+}
+.case-table th {
+    background: var(--color-accent);
+    color: white;
+    padding: 0.7rem 0.8rem;
+    text-align: left;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.case-table td {
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text);
+    vertical-align: middle;
+}
+.case-table tr:nth-child(even) td { background: var(--color-card-bg); }
+.case-table tr:hover td { background: rgba(233,69,96,0.06); }
+[data-theme="light"] .case-table tr:hover td { background: rgba(92,61,46,0.06); }
+.case-table tr.hidden-row { display: none; }
+
+.tag-space {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    color: white;
+    white-space: nowrap;
+}
+.tag-eco-sp { background: var(--tag-eco); }
+.tag-agri-sp { background: var(--tag-agri); }
+.tag-urban-sp { background: var(--tag-urban); }
+.tag-marine-sp { background: var(--tag-marine); }
+
+.tag-typical { font-size: 0.75rem; color: var(--tag-typical); font-weight: 700; }
+
+.table-footer {
+    text-align: right;
+    font-size: 0.75rem;
+    color: var(--color-text-dim);
+    margin-top: 0.5rem;
+}
+
+/* ===== 支持机制 ===== */
+.support-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+}
+.support-card {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 1.2rem;
+    position: relative;
+    overflow: hidden;
+}
+.support-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: var(--color-accent);
+}
+.support-icon { font-size: 1.5rem; margin-bottom: 0.6rem; }
+.support-title { font-size: 0.92rem; font-weight: 700; color: var(--color-accent); margin-bottom: 0.4rem; }
+.support-desc { font-size: 0.8rem; color: var(--color-text-dim); line-height: 1.6; }
+
+/* ===== 常见误区翻卡 ===== */
+.faq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+.faq-card {
+    perspective: 800px;
+    height: 130px;
+    cursor: pointer;
+}
+.faq-inner {
+    position: relative;
+    width: 100%; height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.faq-card.flipped .faq-inner { transform: rotateY(180deg); }
+.faq-front, .faq-back {
+    position: absolute; inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px solid var(--color-border);
+}
+.faq-front {
+    background: var(--color-card-bg);
+    border-color: var(--color-accent);
+}
+.faq-back {
+    background: var(--color-accent);
+    transform: rotateY(180deg);
+    border-color: transparent;
+}
+.faq-wrong {
+    font-size: 0.78rem;
+    color: var(--color-accent);
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    display: flex; align-items: center; gap: 0.4rem;
+}
+.faq-wrong::before { content: '❌'; }
+.faq-myth { font-size: 0.88rem; font-weight: 600; color: var(--color-text); line-height: 1.5; }
+.faq-flip-hint { font-size: 0.7rem; color: var(--color-text-dim); margin-top: 0.4rem; }
+.faq-right {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.8);
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    display: flex; align-items: center; gap: 0.4rem;
+}
+.faq-right::before { content: '✅'; }
+.faq-correct { font-size: 0.88rem; color: white; font-weight: 600; line-height: 1.5; }
+
+/* ===== 年度总览 ===== */
+.overview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+@media (max-width: 480px) { .overview-grid { grid-template-columns: 1fr; } }
+.overview-card {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 1.4rem;
+    text-align: center;
+}
+.ov-year { font-size: 0.82rem; font-weight: 700; color: var(--color-accent); margin-bottom: 0.8rem; }
+.ov-stat { display: flex; justify-content: space-around; gap: 0.5rem; margin-bottom: 0.8rem; }
+.ov-num { font-size: 1.8rem; font-weight: 900; color: var(--color-accent); line-height: 1; }
+.ov-label { font-size: 0.7rem; color: var(--color-text-dim); }
+.ov-area { font-size: 0.8rem; color: var(--color-text-dim); margin-top: 0.3rem; }
+
+/* ===== 页脚 ===== */
+.oecm-footer {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    border-top: 1px solid var(--color-border);
+    font-size: 0.78rem;
+    color: var(--color-text-dim);
+    line-height: 2;
+}
+.oecm-footer a { color: var(--color-accent); text-decoration: none; }
+.oecm-footer a:hover { text-decoration: underline; }
+
+/* ===== 通用工具 ===== */
+.divider { height: 1px; background: var(--color-border); margin: 1.5rem 0; }
+</style>
+</head>
+<body>
+
+<!-- 顶部锚点导航 -->
+<nav class="oecm-nav" id="oecmNav">
+    <button class="nav-back" onclick="history.back()">← 返回</button>
+    <div class="nav-links">
+        <a class="nav-link" href="#def">定义</a>
+        <a class="nav-link" href="#compare">vs 保护地</a>
+        <a class="nav-link" href="#why">为什么重要</a>
+        <a class="nav-link" href="#criteria">判断准则</a>
+        <a class="nav-link" href="#goals">保护目标</a>
+        <a class="nav-link" href="#china-types">中国类型</a>
+        <a class="nav-link" href="#timeline">时间线</a>
+        <a class="nav-link" href="#cases">中国案例</a>
+        <a class="nav-link" href="#support">支持机制</a>
+        <a class="nav-link" href="#faq">常见误区</a>
+    </div>
+    <button class="nav-theme" id="navThemeBtn" onclick="toggleTheme()">切换主题</button>
+</nav>
+
+<div class="oecm-page">
+
+    <!-- Hero 首屏 -->
+    <section class="oecm-hero" id="hero">
+        <div class="hero-kicker">通关解锁 · 保护地之外</div>
+        <div class="hero-layout">
+            <div>
+                <div class="hero-title-big">OECM</div>
+                <div class="hero-title-sub">Other Effective area-based<br>Conservation Measures<br><strong>其他有效的区域保护措施</strong></div>
+            </div>
+            <div class="hero-definition">
+                不是所有有效保护都发生在自然保护区里。<br><br>
+                OECM 关注的是：一个地方即使不属于正式保护地，是否也能通过长期治理和管理，实现<strong>真实、持续的生物多样性保护成果</strong>。
+            </div>
+        </div>
+        <div class="hero-tags">
+            <span class="hero-tag accent">保护地之外</span>
+            <span class="hero-tag success">长期有效</span>
+            <span class="hero-tag warning">多元主体</span>
+            <span class="hero-tag info">兼容利用</span>
+        </div>
+    </section>
+
+    <!-- 模块1：定义 + 关键词 -->
+    <section class="oecm-section" id="def">
+        <div class="section-header">
+            <span class="section-num">01</span>
+            <h2 class="section-title">OECM 定义</h2>
+        </div>
+        <div class="oecm-card" style="margin-bottom:1.2rem;">
+            <div class="card-title">CBD 正式定义（2018年，第14/8号决议）</div>
+            <div style="font-size:0.9rem;line-height:1.9;color:var(--color-text);">
+                自然保护地以外，通过治理和管理，实现生物多样性就地保护的<strong>积极、持续、长期成果</strong>，并同时取得相关生态系统功能和服务，以及在适用情况下的文化、精神、社会经济和其他本地价值。
+            </div>
+        </div>
+        <div class="keyword-grid">
+            <div class="keyword-card">
+                <span class="kw-tag">其他</span>
+                <div class="kw-text">不属于已有自然保护地体系，是保护网络的<strong>补充</strong>，而非替代</div>
+            </div>
+            <div class="keyword-card">
+                <span class="kw-tag">有效</span>
+                <div class="kw-text">产生<strong>长期保护成效</strong>，不能只有形式，必须有可验证的结果</div>
+            </div>
+            <div class="keyword-card">
+                <span class="kw-tag">区域</span>
+                <div class="kw-text">可识别、划定和管理的<strong>空间边界</strong>，有地理范围</div>
+            </div>
+            <div class="keyword-card">
+                <span class="kw-tag">措施</span>
+                <div class="kw-text">通过治理、管理、巡护、监测、修复、<strong>限制干扰</strong>实现保护</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块2：对比表 -->
+    <section class="oecm-section" id="compare">
+        <div class="section-header">
+            <span class="section-num">02</span>
+            <h2 class="section-title">OECM vs 自然保护地</h2>
+        </div>
+        <div style="overflow-x:auto;border-radius:12px;box-shadow:var(--shadow-card);">
+            <table class="compare-table">
+                <thead>
+                    <tr>
+                        <th>对比项</th>
+                        <th>自然保护地</th>
+                        <th>OECM</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>是否属于保护地体系</td><td>是</td><td>否（体系之外）</td></tr>
+                    <tr><td>保护是否必须为主要目标</td><td>通常必须</td><td>不一定，但必须产生实际保护成效</td></tr>
+                    <tr><td>判断重点</td><td>法定设立、保护目标、管理边界</td><td>是否实现长期、有效保护成果</td></tr>
+                    <tr><td>人类活动</td><td>严格限制</td><td>可兼容生产、生活、旅游、教育等活动</td></tr>
+                    <tr><td>典型空间</td><td>国家公园、自然保护区、自然公园</td><td>社区保护地、公益保护地、自然友好农田、城市公园、校园、企业园区、修复后管理区</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 模块3：重要性 -->
+    <section class="oecm-section" id="why">
+        <div class="section-header">
+            <span class="section-num">03</span>
+            <h2 class="section-title">OECM 为什么重要</h2>
+        </div>
+        <div class="card-grid card-grid-2">
+            <div class="oecm-card">
+                <div class="card-icon">🗺️</div>
+                <div class="card-title">填补保护空缺</div>
+                <div class="card-desc">全球仍有大量具有重要生物多样性价值的生态空间游离于保护地网络之外，OECM 可以系统性地覆盖这些空缺区域。</div>
+            </div>
+            <div class="oecm-card">
+                <div class="card-icon">🌍</div>
+                <div class="card-title">支撑"3030目标"</div>
+                <div class="card-desc">2022年《昆明—蒙特利尔框架》要求2030年保护30%陆地和水域，OECM 是实现这一目标不可缺少的核心路径之一。</div>
+            </div>
+            <div class="oecm-card">
+                <div class="card-icon">👥</div>
+                <div class="card-title">承认多元主体贡献</div>
+                <div class="card-desc">社区、公益组织、企业、学校、科研机构、宗教场所等非政府主体的保护实践，都有机会通过 OECM 获得正式认可。</div>
+            </div>
+            <div class="oecm-card">
+                <div class="card-icon">⚖️</div>
+                <div class="card-title">兼容保护与利用</div>
+                <div class="card-desc">允许可持续生产和生活活动继续进行，但以保护成果为优先。这为许多兼顾生计和保护的场景打开了制度空间。</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块4：判断准则互动卡 -->
+    <section class="oecm-section" id="criteria">
+        <div class="section-header">
+            <span class="section-num">04</span>
+            <h2 class="section-title">四项判断准则</h2>
+        </div>
+        <p style="font-size:0.85rem;color:var(--color-text-dim);margin-bottom:1rem;">点击卡片展开/收起详细说明。一个区域必须同时满足 A+B+C 才能识别为 OECM，D 为加分项。</p>
+        <div class="criteria-grid">
+            <div class="criteria-card" onclick="this.classList.toggle('active')">
+                <div class="crit-header">
+                    <div class="crit-letter">A</div>
+                    <div class="crit-title">不在已有自然保护地，但有清晰边界</div>
+                </div>
+                <div class="crit-desc">必须位于自然保护地体系之外；必须有可识别、可管理的空间边界，便于报告和监测。</div>
+            </div>
+            <div class="criteria-card" onclick="this.classList.toggle('active')">
+                <div class="crit-header">
+                    <div class="crit-letter">B</div>
+                    <div class="crit-title">区域被有效治理和管理</div>
+                </div>
+                <div class="crit-desc">有明确的责任主体和治理机制，有管理安排，各权益主体参与其中，管理行动持续落地。</div>
+            </div>
+            <div class="criteria-card" onclick="this.classList.toggle('active')">
+                <div class="crit-header">
+                    <div class="crit-letter">C</div>
+                    <div class="crit-title">对生物多样性保护有持续有效贡献</div>
+                </div>
+                <div class="crit-desc">区域具有重要的生物多样性价值；持续开展保护行动和监测；保护成果可持续，不随管理方式改变而消失。</div>
+            </div>
+            <div class="criteria-card" onclick="this.classList.toggle('active')">
+                <div class="crit-header">
+                    <div class="crit-letter">D</div>
+                    <div class="crit-title">具有生态系统服务和本地价值</div>
+                </div>
+                <div class="crit-desc">保护水源、调节气候、防灾减灾、文化传承、社会经济等多重效益。此项为加分但非必须准则。</div>
+            </div>
+        </div>
+        <p class="crit-hint">💡 点击卡片高亮 = 该准则已满足；判断 OECM 需至少满足 A+B+C</p>
+    </section>
+
+    <!-- 模块5：保护目标三栏 -->
+    <section class="oecm-section" id="goals">
+        <div class="section-header">
+            <span class="section-num">05</span>
+            <h2 class="section-title">三类保护目标类型</h2>
+        </div>
+        <div class="goal-grid">
+            <div class="goal-card primary">
+                <span class="goal-badge">主要保护</span>
+                <div class="goal-title">生物多样性为主要目标</div>
+                <div class="goal-meaning">建立和管理的初始目的就是保护生物多样性，保护行动处于核心位置。</div>
+                <div class="goal-examples">
+                    <span>公益保护地</span><span>社区保护地</span><span>自然圣境</span><span>野生动物栖息地</span>
+                </div>
+            </div>
+            <div class="goal-card secondary">
+                <span class="goal-badge">次级保护</span>
+                <div class="goal-title">保护为次要目标，但包含保护措施</div>
+                <div class="goal-meaning">主要目标是水源保护、可持续利用等，但管理过程中包含明确的保护措施和成效。</div>
+                <div class="goal-examples">
+                    <span>饮用水水源地</span><span>湿地修复区</span><span>生态农场</span><span>候鸟友好农田</span>
+                </div>
+            </div>
+            <div class="goal-card auxiliary">
+                <span class="goal-badge">辅助保护</span>
+                <div class="goal-title">初始目标非保护，但产生长期成效</div>
+                <div class="goal-meaning">设立目的是文化、教育、旅游或经营，但通过长期管理客观上产生了真实保护成效。</div>
+                <div class="goal-examples">
+                    <span>校园绿地</span><span>企业园区</span><span>文化遗产地</span><span>部分风景区</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块6：中国潜在类型 -->
+    <section class="oecm-section" id="china-types">
+        <div class="section-header">
+            <span class="section-num">06</span>
+            <h2 class="section-title">中国潜在 OECM 类型</h2>
+        </div>
+        <div class="space-grid">
+            <div class="space-card">
+                <div class="space-header">
+                    <span class="space-icon">🌲</span>
+                    <div>
+                        <div class="space-name">生态空间</div>
+                        <div class="space-subtitle">自然生态系统为主</div>
+                    </div>
+                </div>
+                <div class="space-tags">
+                    <span class="space-tag">生态公益林</span><span class="space-tag">重要栖息地</span><span class="space-tag">湿地</span>
+                    <span class="space-tag">饮用水水源地</span><span class="space-tag">基本草原</span><span class="space-tag">公益保护地</span>
+                    <span class="space-tag">社区保护地</span><span class="space-tag">自然圣境</span><span class="space-tag">修复后管理区</span>
+                    <span class="space-tag">风景区</span>
+                </div>
+            </div>
+            <div class="space-card">
+                <div class="space-header">
+                    <span class="space-icon">🌾</span>
+                    <div>
+                        <div class="space-name">农业空间</div>
+                        <div class="space-subtitle">农业生产兼顾保护</div>
+                    </div>
+                </div>
+                <div class="space-tags">
+                    <span class="space-tag">自然友好农田</span><span class="space-tag">候鸟友好农田</span><span class="space-tag">自然友好牧场</span>
+                    <span class="space-tag">禁捕区</span><span class="space-tag">生态农场</span><span class="space-tag">多营养层次综合养殖区</span>
+                    <span class="space-tag">海洋牧场</span>
+                </div>
+            </div>
+            <div class="space-card">
+                <div class="space-header">
+                    <span class="space-icon">🏙️</span>
+                    <div>
+                        <div class="space-name">城镇空间</div>
+                        <div class="space-subtitle">城市建成区内的绿色斑块</div>
+                    </div>
+                </div>
+                <div class="space-tags">
+                    <span class="space-tag">城市公园</span><span class="space-tag">校园</span><span class="space-tag">单位园区</span>
+                    <span class="space-tag">企业园区</span><span class="space-tag">城市绿地</span><span class="space-tag">城央湿地</span>
+                    <span class="space-tag">近自然绿地</span>
+                </div>
+            </div>
+            <div class="space-card">
+                <div class="space-header">
+                    <span class="space-icon">🌊</span>
+                    <div>
+                        <div class="space-name">海洋与沿海空间</div>
+                        <div class="space-subtitle">海洋和海岸带保护</div>
+                    </div>
+                </div>
+                <div class="space-tags">
+                    <span class="space-tag">滨海湿地</span><span class="space-tag">无居民海岛</span><span class="space-tag">海洋和海岸带</span>
+                    <span class="space-tag">滩涂养殖区</span><span class="space-tag">珊瑚礁</span><span class="space-tag">红树林</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块7：时间线 -->
+    <section class="oecm-section" id="timeline">
+        <div class="section-header">
+            <span class="section-num">07</span>
+            <h2 class="section-title">国际与中国发展时间线</h2>
+        </div>
+        <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:1rem;font-size:0.78rem;">
+            <span style="display:flex;align-items:center;gap:0.3rem;"><span style="width:10px;height:10px;border-radius:50%;background:var(--color-accent);display:inline-block;"></span>国际进展</span>
+            <span style="display:flex;align-items:center;gap:0.3rem;"><span style="width:10px;height:10px;border-radius:50%;background:var(--color-warning);display:inline-block;"></span>里程碑</span>
+            <span style="display:flex;align-items:center;gap:0.3rem;"><span style="width:10px;height:10px;border-radius:50%;background:var(--tag-eco);display:inline-block;"></span>中国进展</span>
+        </div>
+        <div class="timeline-wrap">
+            <div class="timeline-phase-label">概念萌芽期（2010—2017）</div>
+            <div class="timeline-item">
+                <div class="tl-year">2010 · CBD COP10</div>
+                <div class="tl-event">OECM概念首次出现</div>
+                <div class="tl-meaning">作为爱知目标11的一部分，OECM与保护区并列纳入全球保护目标</div>
+            </div>
+            <div class="timeline-item">
+                <div class="tl-year">2012 · IUCN世界保护大会</div>
+                <div class="tl-event">启动OECMs工作</div>
+                <div class="tl-meaning">委托世界保护区委员会（WCPA）提供技术指导，开始系统研究</div>
+            </div>
+            <div class="timeline-item">
+                <div class="tl-year">2015 · IUCN-WCPA</div>
+                <div class="tl-event">成立OECM专门工作组</div>
+                <div class="tl-meaning">进入系统研究和识别指南制定阶段</div>
+            </div>
+
+            <div class="timeline-phase-label">正式认可期（2018—2022）</div>
+            <div class="timeline-item highlight">
+                <div class="tl-year">2018 · CBD COP14</div>
+                <div class="tl-event">通过OECM正式定义</div>
+                <div class="tl-meaning">第14/8号决议明确OECM定义，全球政府间首次正式认可</div>
+            </div>
+            <div class="timeline-item">
+                <div class="tl-year">2019 · IUCN</div>
+                <div class="tl-event">《OECMs识别与报告指南》发布</div>
+                <div class="tl-meaning">将政策转化为识别和报告流程，WD-OECM全球数据库建立</div>
+            </div>
+            <div class="timeline-item highlight">
+                <div class="tl-year">2022 · 昆明—蒙特利尔框架</div>
+                <div class="tl-event">OECM成为"3030目标"核心路径</div>
+                <div class="tl-meaning">到2030年有效保护30%陆地和水域，OECM与保护区并列为实现路径</div>
+            </div>
+
+            <div class="timeline-phase-label">中国本土化探索（2023—至今）</div>
+            <div class="timeline-item china">
+                <div class="tl-year">2023 · 中国</div>
+                <div class="tl-event">OECM纳入国家保护战略</div>
+                <div class="tl-meaning">《中国生物多样性保护战略与行动计划（2023—2030年）》将OECM纳入政策体系</div>
+            </div>
+            <div class="timeline-item china">
+                <div class="tl-year">2024 · 中国首期潜力案例</div>
+                <div class="tl-event">46个潜力案例，12个典型案例</div>
+                <div class="tl-meaning">保护面积约1,290 km²，并在COP16国际会议上展示中国实践</div>
+            </div>
+            <div class="timeline-item china">
+                <div class="tl-year">2024 · 专项基金发起</div>
+                <div class="tl-event">华泰证券 & 山水基金专项基金</div>
+                <div class="tl-meaning">为潜力案例提供资金、技术和监测支持，推动多元主体参与</div>
+            </div>
+            <div class="timeline-item china">
+                <div class="tl-year">2025 · 第二期潜力案例</div>
+                <div class="tl-event">40个潜力案例，15个典型案例</div>
+                <div class="tl-meaning">保护面积约929 km²，IUCN提供中国情境评估工具建议</div>
+            </div>
+            <div class="timeline-item highlight">
+                <div class="tl-year">2030 · 目标截止</div>
+                <div class="tl-event">"3030目标"评估</div>
+                <div class="tl-meaning">将评估各国保护面积、有效性、连通性、代表性、公平治理五个维度</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块8：案例表格 -->
+    <section class="oecm-section" id="cases">
+        <div class="section-header">
+            <span class="section-num">08</span>
+            <h2 class="section-title">中国潜力 OECM 案例</h2>
+        </div>
+
+        <!-- 年度总览 -->
+        <div class="overview-grid">
+            <div class="overview-card">
+                <div class="ov-year">2024 首期</div>
+                <div class="ov-stat">
+                    <div><div class="ov-num">46</div><div class="ov-label">潜力案例</div></div>
+                    <div><div class="ov-num">12</div><div class="ov-label">典型案例</div></div>
+                </div>
+                <div class="ov-area">保护面积约 1,290 km²（129,024 公顷）</div>
+            </div>
+            <div class="overview-card">
+                <div class="ov-year">2025—2026 第二期</div>
+                <div class="ov-stat">
+                    <div><div class="ov-num">40</div><div class="ov-label">潜力案例</div></div>
+                    <div><div class="ov-num">15</div><div class="ov-label">典型案例</div></div>
+                </div>
+                <div class="ov-area">保护面积约 929 km²（92,890 公顷）</div>
+            </div>
+        </div>
+
+        <!-- 筛选控件 -->
+        <div class="table-controls">
+            <input class="table-search" id="caseSearch" type="text" placeholder="🔍 搜索案例名称、位置…" oninput="filterCases()">
+            <button class="filter-btn active" data-year="all" onclick="setYearFilter('all', this)">全部年份</button>
+            <button class="filter-btn" data-year="2024" onclick="setYearFilter('2024', this)">2024 首期</button>
+            <button class="filter-btn" data-year="2025" onclick="setYearFilter('2025', this)">2025—2026 第二期</button>
+            <button class="filter-btn active" data-space="all" onclick="setSpaceFilter('all', this)" style="margin-left:0.4rem;">全部类型</button>
+            <button class="filter-btn" data-space="生态空间" onclick="setSpaceFilter('生态空间', this)">🌲 生态空间</button>
+            <button class="filter-btn" data-space="农业空间" onclick="setSpaceFilter('农业空间', this)">🌾 农业空间</button>
+            <button class="filter-btn" data-space="城镇空间" onclick="setSpaceFilter('城镇空间', this)">🏙️ 城镇空间</button>
+            <button class="filter-btn" data-space="海洋和沿海" onclick="setSpaceFilter('海洋和沿海', this)">🌊 海洋和沿海</button>
+            <button class="filter-btn" data-typical="1" onclick="toggleTypical(this)" style="margin-left:0.4rem;">⭐ 仅典型</button>
+        </div>
+
+        <div class="case-table-wrap">
+            <table class="case-table" id="caseTable">
+                <thead>
+                    <tr>
+                        <th>年份</th>
+                        <th>空间类型</th>
+                        <th>子类别</th>
+                        <th>案例名称</th>
+                        <th>位置</th>
+                        <th>典型</th>
+                    </tr>
+                </thead>
+                <tbody id="caseTbody">
+                    <!-- 由 JS 动态生成 -->
+                </tbody>
+            </table>
+        </div>
+        <div class="table-footer" id="caseCount">共 0 条案例</div>
+    </section>
+
+    <!-- 模块9：支持机制 -->
+    <section class="oecm-section" id="support">
+        <div class="section-header">
+            <span class="section-num">09</span>
+            <h2 class="section-title">OECM 支持机制</h2>
+        </div>
+        <div class="support-grid">
+            <div class="support-card">
+                <div class="support-icon">🌐</div>
+                <div class="support-title">潜力案例平台</div>
+                <div class="support-desc">提供案例展示、申报指南、案例资料库。网址：<a href="https://oecms.com.cn" target="_blank" rel="noopener" style="color:var(--color-accent);">oecms.com.cn</a></div>
+            </div>
+            <div class="support-card">
+                <div class="support-icon">💰</div>
+                <div class="support-title">专项资金支持</div>
+                <div class="support-desc">华泰证券与山水公益基金会发起专项基金，提供资金、技术、监测支持，推动多元主体参与保护。</div>
+            </div>
+            <div class="support-card">
+                <div class="support-icon">🔬</div>
+                <div class="support-title">技术与本底监测</div>
+                <div class="support-desc">提供生态调查、保护行动评估、社区治理培训等技术支持，帮助案例建立可持续的监测和报告体系。</div>
+            </div>
+            <div class="support-card">
+                <div class="support-icon">🌱</div>
+                <div class="support-title">山水公益基金会</div>
+                <div class="support-desc">长期专注于中国生物多样性保护，是推动 OECM 本土化探索的核心机构之一，协同社区和多元主体。</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块10：常见误区翻卡 -->
+    <section class="oecm-section" id="faq">
+        <div class="section-header">
+            <span class="section-num">10</span>
+            <h2 class="section-title">常见误区</h2>
+        </div>
+        <p style="font-size:0.82rem;color:var(--color-text-dim);margin-bottom:1rem;">👆 点击卡片翻面查看正确理解</p>
+        <div class="faq-grid" id="faqGrid">
+            <!-- 由 JS 动态生成 -->
+        </div>
+    </section>
+
+</div><!-- /.oecm-page -->
+
+<!-- 页脚 -->
+<footer class="oecm-footer">
+    <div>本页面内容基于 CBD 第14/8号决议、IUCN《OECMs识别与报告指南》及中国潜力案例公开材料整理</div>
+    <div style="margin-top:0.4rem;">
+        参考资料：
+        <a href="https://oecms.com.cn" target="_blank" rel="noopener">中国OECM潜力案例平台</a> ·
+        <a href="https://www.iucn.org/theme/protected-areas/our-work/oecms" target="_blank" rel="noopener">IUCN OECMs</a>
+    </div>
+    <div style="margin-top:0.8rem;opacity:0.6;">猫村共生记 · 通关奖励知识档案 · 2026</div>
+</footer>
+
+<script>
+// ===== 主题初始化 =====
+(function() {
+    var params = new URLSearchParams(window.location.search);
+    var theme = params.get('theme') || localStorage.getItem('catvillage-theme') || 'dark';
+    document.body.setAttribute('data-theme', theme);
+    updateThemeBtn(theme);
+})();
+
+function toggleTheme() {
+    var current = document.body.getAttribute('data-theme') || 'dark';
+    var next = current === 'dark' ? 'light' : 'dark';
+    document.body.setAttribute('data-theme', next);
+    localStorage.setItem('catvillage-theme', next);
+    updateThemeBtn(next);
+}
+function updateThemeBtn(theme) {
+    var btn = document.getElementById('navThemeBtn');
+    if (btn) btn.textContent = theme === 'dark' ? '☀️ 晨曦模式' : '🌙 暗夜模式';
+}
+
+// ===== 返回逻辑 =====
+// 如果没有历史记录则关闭窗口（从游戏新标签打开时）
+document.addEventListener('DOMContentLoaded', function() {
+    var navBack = document.querySelector('.nav-back');
+    if (navBack) {
+        navBack.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (history.length > 1) {
+                history.back();
+            } else {
+                window.close();
+            }
+        });
+    }
+});
+
+// ===== 案例数据 =====
+var CASES = [
+    // 2024 首期
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'国有林场',name:'北京市京西林场',loc:'北京',typical:true},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'国有林场',name:'汪清大东沟东北虎豹保护地',loc:'吉林',typical:true},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'国有林场',name:'蚂蚁森林云龙五宝山滇金丝猴公益保护地',loc:'云南',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'政府治理湿地',name:'武汉豹澥湖青头潜鸭及多种鸟类重要栖息地保护',loc:'湖北',typical:true},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'政府治理湿地',name:'浙江杭州余杭北湖湿地候鸟重要栖息地',loc:'浙江',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'政府治理湿地',name:'苏州吴江章湾荡小微湿地群',loc:'江苏',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'政府治理湿地',name:'成都云桥水源湿地护理区生物多样性保护行动',loc:'四川',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'公益保护地',name:'乌禽嶂中华穿山甲保护地',loc:'广东',typical:true},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'公益保护地',name:'山西和顺蚂蚁森林（华北豹）公益保护地',loc:'山西',typical:true},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'公益保护地',name:'桃花源雪岭社会公益型自然保护地',loc:'浙江',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'公益保护地',name:'神农架太阳坪社会公益保护地',loc:'湖北',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'公益保护地',name:'"江河荟浙江翠"寺坞岭自然地',loc:'浙江',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'公益保护地',name:'青山村水源和生物多样性保护地',loc:'浙江',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'南仁萨勇滇金丝猴保护地',loc:'云南',typical:true},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'巴美滇金丝猴公益保护地',loc:'云南',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'云南芒市芒杏河中缅灰叶猴公益保护地',loc:'云南',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'苏典傈僳族乡天行长臂猿社区保护地',loc:'云南',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'广西渠楠社区保护地多元治理与可持续发展案例',loc:'广西',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'孟连黑山社区保护地',loc:'云南',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'云南芒坝"鹦鹉寨"——大紫胸鹦鹉重要栖息地',loc:'云南',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'云南省西双版纳州勐海县布朗族社区"竜山"自然圣境保护',loc:'云南',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'西双版纳州景洪市勐罕镇曼远村竜山保护与修复',loc:'云南',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'朝阳村左溪河流域自然保护小区',loc:'陕西',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'平武县福寿自然保护小区',loc:'四川',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'若尔盖牧民为主体的草原生态修复与保护',loc:'四川',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'乃朗谷自然保护小区',loc:'西藏',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'江西九江都昌马影湖社区公益保护地',loc:'江西',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'农业空间',sub:'自然友好农田',name:'宝山石头城传统山地生态文化农耕系统社区保护地',loc:'云南',typical:true},
+    {year:'2024',cat:'陆地和淡水',space:'农业空间',sub:'自然友好农田',name:'密云水库流域小漕村鸟类栖息地',loc:'北京',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'农业空间',sub:'自然友好农田',name:'河上乡自然保育管理计划',loc:'香港',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'农业空间',sub:'自然友好农田',name:'小毛驴市民农园的生物多样性保护实践',loc:'北京',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'农业空间',sub:'自然友好农田',name:'苏州昆山阳澄湖悦丰岛有机农场',loc:'江苏',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'农业空间',sub:'自然友好农田',name:'南京红山动物园无斑雨蛙保护农田',loc:'江苏',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'城镇空间',sub:'城市公园',name:'北京温榆河公园',loc:'北京',typical:true},
+    {year:'2024',cat:'陆地和淡水',space:'城镇空间',sub:'城市公园',name:'金海湿地野生动物重要栖息地',loc:'上海',typical:true},
+    {year:'2024',cat:'陆地和淡水',space:'城镇空间',sub:'城市公园',name:'上海迪士尼度假区星愿公园',loc:'上海',typical:true},
+    {year:'2024',cat:'陆地和淡水',space:'城镇空间',sub:'城市公园',name:'南京奥体中心近自然绿地',loc:'江苏',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'城镇空间',sub:'城市公园',name:'香格里拉高山植物园自然植被区',loc:'云南',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'城镇空间',sub:'校园',name:'北京大学校园自然保护小区',loc:'北京',typical:true},
+    {year:'2024',cat:'陆地和淡水',space:'城镇空间',sub:'校园',name:'华南农业大学（天河五山校部）',loc:'广东',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'城镇空间',sub:'企业园区',name:'广汽丰田生态园',loc:'广东',typical:false},
+    {year:'2024',cat:'陆地和淡水',space:'城镇空间',sub:'企业园区',name:'长庆油田苏里格气田苏6区自主贡献型生物多样性保护地',loc:'内蒙古',typical:false},
+    {year:'2024',cat:'海洋和沿海',space:'生态空间',sub:'滨海湿地',name:'北港岛滨海湿地生态和生物多样性保护',loc:'海南',typical:false},
+    {year:'2024',cat:'海洋和沿海',space:'生态空间',sub:'滨海湿地',name:'乐东县莺歌海新村保护地',loc:'海南',typical:false},
+    {year:'2024',cat:'海洋和沿海',space:'生态空间',sub:'无居民海岛',name:'基于连江四母屿群岛的燕鸥保育',loc:'福建',typical:false},
+    {year:'2024',cat:'海洋和沿海',space:'农业空间',sub:'滩涂养殖区',name:'江苏如东滨海村潮间带滩涂渔业可持续管理和候鸟栖息地保护',loc:'江苏',typical:true},
+    // 2025—2026 第二期
+    {year:'2025',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'青海那索尼村藏族社区自然圣境保护地',loc:'青海',typical:true},
+    {year:'2025',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'青海省刚察县哈尔盖镇贡公麻村雪豹保护地',loc:'青海',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'阿坝柯河玛荣社区保护地',loc:'四川',typical:true},
+    {year:'2025',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'成都崇州大坪村猛禽社区保护地',loc:'四川',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'西双版纳巩丙新村自然圣境',loc:'云南',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'西双版纳州勐腊县勐仑镇多元协同自然圣境保护',loc:'云南',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'普洱澜沧岩脚社区协议保护地',loc:'云南',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'安徽宏村大同社区保护地',loc:'安徽',typical:true},
+    {year:'2025',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'杭州临安高云村珍稀濒危植物协同保护地',loc:'浙江',typical:true},
+    {year:'2025',cat:'陆地和淡水',space:'生态空间',sub:'社区保护地',name:'内蒙古锡林郭勒盟查干淖尔候鸟重要栖息地社区保护地',loc:'内蒙古',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'生态空间',sub:'公益保护地',name:'张掖北部荒漠兔狲保护小区',loc:'甘肃',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'生态空间',sub:'公益保护地',name:'山西和顺上北舍华北豹栖息地生态保护与修复区',loc:'山西',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'生态空间',sub:'公益保护地',name:'浙江金塘水獭友好社区保护地',loc:'浙江',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'生态空间',sub:'政府治理湿地',name:'武汉府河湿地（东西湖区）柏泉天鹅湖自然共生地',loc:'湖北',typical:true},
+    {year:'2025',cat:'陆地和淡水',space:'生态空间',sub:'修复后管理区',name:'广州湾咀头人鸟共生城央湿地共建社区',loc:'广州',typical:true},
+    {year:'2025',cat:'陆地和淡水',space:'生态空间',sub:'修复后管理区',name:'千岛湖水基金：小五都源流域韧性与生物多样性保护地',loc:'浙江',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'生态空间',sub:'修复后管理区',name:'甘肃古浪八步沙林场生物多样性保育地',loc:'甘肃',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'生态空间',sub:'风景区',name:'中国·荥经桢楠王公园：千年桢楠林多元主体协同保护',loc:'四川',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'生态空间',sub:'风景区',name:'北京龙云山自然风景区',loc:'北京',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'农业空间',sub:'自然友好农田',name:'江苏盐城黄尖镇潮间带生态艺术社区的候鸟友好示范田',loc:'江苏',typical:true},
+    {year:'2025',cat:'陆地和淡水',space:'农业空间',sub:'自然友好农田',name:'钱江源唐头村农业生物多样性保护示范村',loc:'浙江',typical:true},
+    {year:'2025',cat:'陆地和淡水',space:'农业空间',sub:'自然友好农田',name:'福州连江山堂村候鸟友好农田',loc:'福建',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'农业空间',sub:'自然友好牧场',name:'牧野共生：现代牧业双城牧场生物多样性友好牧场',loc:'黑龙江',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'城镇空间',sub:'城市公园',name:'广州市传统中轴线绿心',loc:'广州',typical:true},
+    {year:'2025',cat:'陆地和淡水',space:'城镇空间',sub:'城市公园',name:'香港塱原自然生态公园',loc:'香港',typical:true},
+    {year:'2025',cat:'陆地和淡水',space:'城镇空间',sub:'城市公园',name:'南京红山本土物种自然共生地',loc:'江苏',typical:true},
+    {year:'2025',cat:'陆地和淡水',space:'城镇空间',sub:'城市公园',name:'昆明翠湖公园',loc:'云南',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'城镇空间',sub:'校园',name:'复旦大学江湾生态保护小区',loc:'上海',typical:true},
+    {year:'2025',cat:'陆地和淡水',space:'城镇空间',sub:'校园',name:'武汉大学珞珈山保护小区',loc:'湖北',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'城镇空间',sub:'校园',name:'兰州大学"萃英守望"自然共生地',loc:'甘肃',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'城镇空间',sub:'校园',name:'西交利物浦大学附属学校校园生物多样性保护与提升示范区',loc:'江苏',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'城镇空间',sub:'单位园区',name:'北京市园林绿化科学研究院望京院区城市绿地',loc:'北京',typical:true},
+    {year:'2025',cat:'陆地和淡水',space:'城镇空间',sub:'企业园区',name:'中国石油长庆油田苏里格气田苏6区自主贡献型生物多样性保护地',loc:'内蒙古',typical:true},
+    {year:'2025',cat:'陆地和淡水',space:'城镇空间',sub:'企业园区',name:'长庆油田苏南-C3区自主贡献型生物多样性保护地',loc:'内蒙古',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'城镇空间',sub:'企业园区',name:'昆仑能源海南"文峰鹭缘"自主贡献型生物多样性保护地',loc:'海南',typical:false},
+    {year:'2025',cat:'陆地和淡水',space:'城镇空间',sub:'企业园区',name:'大庆油田老虎山自主贡献型生物多样性保护地',loc:'黑龙江',typical:false},
+    {year:'2025',cat:'海洋和沿海',space:'生态空间',sub:'海洋和海岸带',name:'香港大鹏湾美丽海湾：生态保育及渔业可持续管理',loc:'香港',typical:true},
+    {year:'2025',cat:'海洋和沿海',space:'生态空间',sub:'海洋和海岸带',name:'葫芦岛兴城市东沙河入海口候鸟友好潮间带',loc:'辽宁',typical:false},
+    {year:'2025',cat:'海洋和沿海',space:'生态空间',sub:'海洋和海岸带',name:'福州青屿村中国鲎海洋公益保护地',loc:'福建',typical:false},
+    {year:'2025',cat:'海洋和沿海',space:'生态空间',sub:'海洋和海岸带',name:'广西钦州三娘湾海洋生物多样性社区保护地',loc:'广西',typical:false},
+];
+
+// 筛选状态
+var filterYear = 'all';
+var filterSpace = 'all';
+var filterTypical = false;
+
+function getSpaceClass(space) {
+    if (space === '生态空间') return 'tag-eco-sp';
+    if (space === '农业空间') return 'tag-agri-sp';
+    if (space === '城镇空间') return 'tag-urban-sp';
+    return 'tag-marine-sp';
+}
+function getSpaceLabel(space) {
+    if (space === '生态空间') return '🌲 生态';
+    if (space === '农业空间') return '🌾 农业';
+    if (space === '城镇空间') return '🏙️ 城镇';
+    return '🌊 海洋';
+}
+
+function renderCases() {
+    var search = document.getElementById('caseSearch').value.trim().toLowerCase();
+    var tbody = document.getElementById('caseTbody');
+    var rows = '';
+    var count = 0;
+    CASES.forEach(function(c) {
+        // 年份筛选
+        if (filterYear !== 'all' && c.year !== filterYear) return;
+        // 空间筛选
+        if (filterSpace !== 'all' && c.space !== filterSpace) return;
+        // 典型筛选
+        if (filterTypical && !c.typical) return;
+        // 搜索
+        if (search && (c.name + c.loc + c.sub).toLowerCase().indexOf(search) === -1) return;
+
+        count++;
+        rows += '<tr>' +
+            '<td><span style="font-size:0.75rem;color:var(--color-text-dim);">' + (c.year === '2025' ? '2025—2026' : '2024') + '</span></td>' +
+            '<td><span class="tag-space ' + getSpaceClass(c.space) + '">' + getSpaceLabel(c.space) + '</span></td>' +
+            '<td style="white-space:nowrap;font-size:0.78rem;color:var(--color-text-dim);">' + c.sub + '</td>' +
+            '<td>' + c.name + '</td>' +
+            '<td style="white-space:nowrap;">' + c.loc + '</td>' +
+            '<td style="text-align:center;">' + (c.typical ? '<span class="tag-typical">★</span>' : '') + '</td>' +
+            '</tr>';
+    });
+    tbody.innerHTML = rows;
+    document.getElementById('caseCount').textContent = '共 ' + count + ' 条案例';
+}
+
+function setYearFilter(year, btn) {
+    filterYear = year;
+    document.querySelectorAll('[data-year]').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    renderCases();
+}
+function setSpaceFilter(space, btn) {
+    filterSpace = space;
+    document.querySelectorAll('[data-space]').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    renderCases();
+}
+function toggleTypical(btn) {
+    filterTypical = !filterTypical;
+    btn.classList.toggle('active', filterTypical);
+    renderCases();
+}
+function filterCases() { renderCases(); }
+
+// ===== 常见误区数据 =====
+var FAQS = [
+    { myth: 'OECM 就是保护区的新名字', correct: '必须在自然保护地之外；必须有有效治理机制；必须产生可验证的长期保护成效' },
+    { myth: '有生态价值的地方就是OECM', correct: '还需要清晰边界、治理主体、管理安排、保护行动和长期成效，缺一不可' },
+    { myth: 'OECM 可以随意开发', correct: '保护成果优先，不能因人类活动而导致保护成效丧失' },
+    { myth: 'OECM 只适合荒野', correct: '农田、校园、城市公园、企业园区、社区空间均可能成为OECM' },
+    { myth: 'OECM 只看面积贡献', correct: '更强调有效性、生态连通性、代表性、公平治理和长期成果' },
+    { myth: '只靠公益组织就能做', correct: '需要政府、社区、科研、企业、公益组织多方协作，单一主体难以支撑长期运营' },
+];
+
+function renderFaqs() {
+    var grid = document.getElementById('faqGrid');
+    var html = '';
+    FAQS.forEach(function(f, i) {
+        html += '<div class="faq-card" onclick="this.classList.toggle(\'flipped\')">' +
+            '<div class="faq-inner">' +
+            '<div class="faq-front">' +
+            '<div class="faq-wrong">常见误区</div>' +
+            '<div class="faq-myth">' + f.myth + '</div>' +
+            '<div class="faq-flip-hint">点击翻面查看正确理解 →</div>' +
+            '</div>' +
+            '<div class="faq-back">' +
+            '<div class="faq-right">正确理解</div>' +
+            '<div class="faq-correct">' + f.correct + '</div>' +
+            '</div>' +
+            '</div></div>';
+    });
+    grid.innerHTML = html;
+}
+
+// 页面初始化
+document.addEventListener('DOMContentLoaded', function() {
+    renderCases();
+    renderFaqs();
+});
+</script>
+</body>
+</html>

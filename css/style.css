@@ -250,6 +250,7 @@ body {
 .event-content .event-desc {
     font-size:1rem; line-height:1.9; max-width:600px; opacity:0.95; margin-bottom:1rem;
     text-shadow:0 1px 8px rgba(0,0,0,0.6); min-height:3em;
+    text-align:left; width:100%;
 }
 .event-content .event-effects {
     display:flex; gap:0.5rem; flex-wrap:wrap; justify-content:center; margin-bottom:1rem;
@@ -346,6 +347,7 @@ body {
 .branch-intro-desc {
     font-size:1rem; line-height:1.9; opacity:0.92; min-height:2em;
     text-shadow:0 1px 8px rgba(0,0,0,0.6);
+    text-align:left;
 }
 
 /* NPC半身像 → 猫脸圆形头像（SVG 设计稿还原） */
@@ -570,7 +572,7 @@ body {
 .ending-desc-text {
     font-size:1.05rem; line-height:2.1; color:#fff;
     text-shadow:0 1px 10px rgba(0,0,0,0.6);
-    text-align:center; min-height:3em;
+    text-align:left; min-height:3em;
 }
 [data-theme="light"] .ending-desc-text {
     color:#fff; text-shadow:0 1px 10px rgba(0,0,0,0.4);
